@@ -1,26 +1,23 @@
 import time
 import random
 
-list = []
-small_list = [] # special small list for insertion, my PC too slow
-for i in range(200000):
-    list.append(random.randint(0, 100000))
-
-for i in range(5000):
-    small_list.append(random.randint(0, 5000))
+def create_list():
+    list = []
+    for i in range(5000):
+        list.append(random.randint(0, 50000))
+    return list
 
 #print(list)
 
 #insertion sort
 def insertionsort(array):
-    
     for i in range(1, len(array)):
-        j = i
-        while array[j - 1] > array[j] and j > 0:
-            temporal = array[j - 1]
-            array[j - 1] = array[j]
-            array[j] = temporal
-            j -= 1
+        x = array[i]
+        j = i - 1
+        while j >= 0 and array[j] > x:
+            array[j+1] = array[j]
+            j = j - 1
+        array[j+1] = x
     return array
 
 #merge sort
@@ -60,17 +57,57 @@ def merge(arrayA, arrayB):
 
     return arrayC
 
-ins_start_time = time.time()
-list_by_insertion = insertionsort(small_list)
-insertion_time = time.time() - ins_start_time
-print(insertion_time)
+def check_insertion(list):
+    ins_start_time = time.time()
+    list_by_insertion = insertionsort(list)
+    insertion_time = time.time() - ins_start_time
+    return insertion_time
 
-mer_start_time = time.time()
-list_by_merge = mergesort(list)
-merge_time = time.time() - mer_start_time
-print(merge_time)
+def check_merge(list):
+    mer_start_time = time.time()
+    list_by_merge = mergesort(list)
+    merge_time = time.time() - mer_start_time
+    return merge_time
 
-def_sort_start_time = time.time()
-list_by_default = list.sort()
-def_sort_time = time.time() - def_sort_start_time
-print(def_sort_time)
+def check_default(list):
+    def_sort_start_time = time.time()
+    list_by_default = list.sort()
+    def_sort_time = time.time() - def_sort_start_time
+    return def_sort_time
+
+def print_average(insertion_times, merge_times, default_times):
+    print('\nAverage insertion time: ' + str(sum(insertion_times)/len(insertion_times)))
+    print('Average merge time: ' + str(sum(merge_times)/len(merge_times)))
+    print('Average default sort time: ' + str(sum(default_times)/len(default_times)))
+
+def print_fastest(insertion_times, merge_times, default_times):
+    print('\nFastest insertion time: ' + str(min(insertion_times)))
+    print('Fastest merge time: ' + str(min(merge_times)))
+    print('Fastest default sort time: ' + str(min(default_times)))
+
+def print_slowest(insertion_times, merge_times, default_times):
+    print('\nSlowest insertion time: ' + str(max(insertion_times)))
+    print('Slowest merge time: ' + str(max(merge_times)))
+    print('Slowest default sort time: ' + str(max(default_times)))
+
+
+def check_time():
+    insertion_times = []
+    merge_times = []
+    default_times = []
+    for i in range(1, 101):
+        list = create_list()
+
+        ins = check_insertion(list)
+        mer = check_merge(list)
+        default = check_default(list)
+
+        insertion_times.append(ins)
+        merge_times.append(mer)
+        default_times.append(default)
+
+    print_average(insertion_times, merge_times, default_times)
+    print_fastest(insertion_times, merge_times, default_times)
+    print_slowest(insertion_times, merge_times, default_times)
+
+check_time()
